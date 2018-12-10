@@ -3,15 +3,18 @@ import styled from 'styled-components';
 export const Container = styled.div`
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  justify-content: flex-start;
   margin-top: 50px;
+  width: 100%;
+  max-width: 1080px;
+  flex-wrap: wrap;
 `;
 
 export const Repository = styled.div`
   width: 250px;
   background: #fff;
   border-radius: 3px;
-  margin: 0 10px;
+  margin: 10px;
   display: flex;
   flex-direction: column;
   box-shadow: 0px 2px 15px -2px rgba(0, 0, 0, 0.6);

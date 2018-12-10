@@ -22,9 +22,10 @@ export const Form = styled.form`
     border-radius: 5px;
 
     background: ${props => (props.withError ? '#ffddeb' : null)};
-    border: ${props => (props.withError ? '2px solid #f00' : null)};
+    border: ${props => (props.withError ? '2px solid #f00' : 0)};
   }
   button {
+    width: 80px;
     height: 55px;
     padding: 0 20px;
     margin-left: 10px;
