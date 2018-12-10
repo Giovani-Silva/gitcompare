@@ -1,10 +1,12 @@
 import React, { Fragment } from 'react';
 import GlobalStyle from './styles/global';
 
+import Main from './pages/Main';
+
 const App = () => (
   <Fragment>
     <GlobalStyle />
-    <h1>react</h1>
+    <Main />
   </Fragment>
 );
 
