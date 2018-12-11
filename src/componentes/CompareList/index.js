@@ -2,11 +2,17 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Container, Repository } from './styles';
 
-const CompareList = ({ repos }) => (
+import ButtonAction from '../ButtonAction';
+
+const CompareList = ({ repos, refresh, remove }) => (
   <Container>
     {repos.map(repo => (
       <Repository key={repo.id}>
         <header>
+          <div className="actions">
+            <ButtonAction icon="refresh" color="darkgray" action={refresh} id={repo.id} />
+            <ButtonAction icon="trash-o" color="palevioletred" action={remove} id={repo.id} />
+          </div>
           <img src={repo.owner.avatar_url} alt="facebook" />
           <strong>{repo.name}</strong>
           <small>{repo.owner.login}</small>
@@ -34,6 +40,10 @@ const CompareList = ({ repos }) => (
   </Container>
 );
 
+CompareList.defaultProps = {
+  refresh: () => 'set the action to refresh repo card',
+  remove: () => 'set the action to remove repo card',
+};
 CompareList.propTypes = {
   repos: PropTypes.arrayOf(
     PropTypes.shape({
@@ -49,6 +59,8 @@ CompareList.propTypes = {
       lastCommit: PropTypes.string,
     }),
   ).isRequired,
+  refresh: PropTypes.func,
+  remove: PropTypes.func,
 };
 
 export default CompareList;

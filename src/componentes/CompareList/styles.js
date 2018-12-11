@@ -25,6 +25,12 @@ export const Repository = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
+
+    .actions {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+    }
     img {
       width: 64px;
     }

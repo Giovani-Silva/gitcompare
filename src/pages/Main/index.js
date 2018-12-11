@@ -25,20 +25,47 @@ class Main extends Component {
     this.setState({ loading: true });
     const { repositoryInput, repositories } = this.state;
     try {
-      const { data: repos } = await api.get(`/repos/${repositoryInput}`);
-      repos.lastCommit = moment(repos.pushed_at).fromNow();
+      const { data: repo } = await api.get(`/repos/${repositoryInput}`);
+      repo.lastCommit = moment(repo.pushed_at).fromNow();
       this.setState({
         repositoryInput: '',
         repoError: false,
-        repositories: [...repositories, repos],
+        repositories: [...repositories, repo],
       });
-
-      ls.set('repositories', repositories);
     } catch (err) {
       this.setState({ repoError: true });
     } finally {
       this.setState({ loading: false });
+      ls.set('repositories', this.state.repositories);
     }
+  };
+
+  handleRefreshRepository = async (id, e) => {
+    e.preventDefault();
+    const repository = this.state.repositories.filter(repo => repo.id === id)[0];
+
+    if (!repository) return;
+
+    const { data: repoUpdated } = await api.get(
+      `/repos/${repository.owner.login}/${repository.name}`,
+    );
+
+    repoUpdated.lastCommit = moment(repoUpdated.pushed_at).fromNow();
+
+    const repositories = this.state.repositories.map((r) => {
+      if (repoUpdated.id === r.id) return repoUpdated;
+
+      return r;
+    });
+    this.setState({ repositories: [...repositories] });
+    ls.set('repositories', repositories);
+  };
+
+  handleRemoveRepository = (id, e) => {
+    e.preventDefault();
+    const repos = this.state.repositories.filter(repo => repo.id !== id);
+    ls.set('repositories', repos);
+    this.setState({ repositories: repos });
   };
 
   render() {
@@ -57,7 +84,11 @@ class Main extends Component {
             {this.state.loading ? <i className="fa fa-spinner fa-pulse" /> : 'OK'}
           </button>
         </Form>
-        <CompareList repos={this.state.repositories} />
+        <CompareList
+          repos={this.state.repositories}
+          refresh={this.handleRefreshRepository}
+          remove={this.handleRemoveRepository}
+        />
       </Container>
     );
   }
