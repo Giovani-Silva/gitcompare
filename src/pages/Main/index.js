@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import moment from 'moment';
+import ls from 'local-storage';
 import api from '../../services/api';
 
 import logo from '../../assets/logo.png';
@@ -14,17 +15,25 @@ class Main extends Component {
     repositories: [],
   };
 
+  componentDidMount() {
+    const repositories = ls.get('repositories') || null;
+    if (repositories) this.setState({ repositories });
+  }
+
   handleAddRepository = async (e) => {
     e.preventDefault();
     this.setState({ loading: true });
+    const { repositoryInput, repositories } = this.state;
     try {
-      const { data: repos } = await api.get(`/repos/${this.state.repositoryInput}`);
+      const { data: repos } = await api.get(`/repos/${repositoryInput}`);
       repos.lastCommit = moment(repos.pushed_at).fromNow();
       this.setState({
         repositoryInput: '',
         repoError: false,
-        repositories: [...this.state.repositories, repos],
+        repositories: [...repositories, repos],
       });
+
+      ls.set('repositories', repositories);
     } catch (err) {
       this.setState({ repoError: true });
     } finally {
